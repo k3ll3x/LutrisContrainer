@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  lutris:
+    tty: true
+    stdin_open: true
+    container_name:  mylutris
+    build:
+      context: .
+      dockerfile: ${DOCKERFILE-Dockerfile}
+    environment:
+      - PULSE_SERVER=unix:/tmp/pulseaudio/pulseaudio.socket
+      - PULSE_COOKIE=/tmp/pulseaudio/pulseaudio.cookie
+      - DISPLAY=:0
+      - UDEV=1
+      - PGID=1000
+      - PUID=1000
+    volumes:
+      - ${SRC-..}:/home/gamer
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /tmp/pulseaudio:/tmp/pulseaudio
+      - /dev/snd:/dev/snd
+    user: 1000:1000
+    devices:
+      - /dev/dri/:/dev/dri/
+      - /dev/snd:/dev/snd
+      - /dev/bus/usb:/dev/bus/usb
+      - /dev/input:/dev/input
