@@ -16,11 +16,11 @@ The Lutris Docker container is a pre-configured environment for running games an
 
 dependencies
 
-	```bash
-		pulseaudio
-		docker
-		docker compose
-	```
+```bash
+	pulseaudio
+	docker
+	docker compose
+```
 Edit .env file for parameters
 
 
