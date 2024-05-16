@@ -1,42 +1,40 @@
-FROM debian:buster
+FROM archlinux/archlinux:base as lutris
 
-ARG username="gamer"
-ARG userhome="/home/${username}"
+RUN pacman -Syy --noconfirm
+RUN pacman -S --noconfirm lutris
 
-ENV HOME ${userhome}
-ENV USER ${username}
+RUN echo [multilib] >> /etc/pacman.conf
+RUN echo Include = /etc/pacman.d/mirrorlist >> /etc/pacman.conf
 
-RUN apt update
+RUN pacman -Syy --noconfirm
+RUN pacman -S --noconfirm nvidia nvidia-utils lib32-nvidia-utils nvidia-settings lib32-mesa vulkan-icd-loader lib32-vulkan-icd-loader vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader
+RUN pacman -S --noconfirm iputils p7zip winetricks wine steam pciutils firefox sdl procps-ng
+RUN pacman -Sy --noconfirm joystick
 
-RUN apt install -y wget gpg
+RUN pacman -Sy --noconfirm \
+    pulseaudio \
+    pulseaudio-alsa \
+    alsa-utils \
+    pavucontrol
 
-RUN echo "deb http://download.opensuse.org/repositories/home:/strycore/Debian_12/ ./" | tee /etc/apt/sources.list.d/lutris.list
-RUN wget -q https://download.opensuse.org/repositories/home:/strycore/Debian_12/Release.key -O- | apt-key add -
-RUN apt update
-RUN apt install -y libterm-readline-gnu-perl
+RUN pacman -Sy --noconfirm lib32-libpulse lib32-alsa-plugins
 
-RUN apt install -y libvulkan1 p7zip-full wine pciutils xterm libglib2.0-0 libglib2.0-dev dbus-x11
-RUN apt install -y alsa-utils pulseaudio
-RUN apt install -y libunwind8
-RUN apt install -y vulkan-utils dxvk
-RUN dpkg --add-architecture i386
-RUN apt update
-RUN apt install -y wine32 libgl1-mesa-glx:i386 libgl1-mesa-dri:i386 libvulkan1:i386 libgnutls30:i386
-RUN ldconfig
 
-RUN apt update
-RUN apt install -y lutris
-RUN apt install -y sudo 
+#User with sudo
+RUN groupadd sudo
+RUN pacman -Syu --needed sudo --noconfirm
+RUN useradd -m gamer
+RUN gpasswd -a gamer sudo
+RUN echo '%sudo ALL=(ALL) ALL' >> /etc/sudoers
+RUN echo 'gamer:gamer' | chpasswd
 
-ENV PATH /home/${username}:$PATH
+# Add the user to the audio group
+RUN usermod -a -G audio gamer
+#set machine id?
+RUN systemd-machine-id-setup
 
-# User
-RUN groupadd -r ${username}
-RUN useradd -rm -d ${userhome} -s /bin/bash -g ${username} -u 1000 ${username}
-RUN adduser ${username} sudo
-RUN chown -R ${username}:${username} ${userhome}
-RUN echo ${username}:${username} | chpasswd
+USER gamer
+ENV USER=gamer
+#VOLUME /home/gamer
 
-WORKDIR /home/${username}
-
-USER ${username}
+CMD ["lutris"]
