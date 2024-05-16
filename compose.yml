@@ -8,6 +8,7 @@ services:
       context: .
       dockerfile: ${DOCKERFILE-Dockerfile}
     environment:
+      - NO_AT_BRIDGE=1
       - PULSE_SERVER=unix:/tmp/pulseaudio/pulseaudio.socket
       - PULSE_COOKIE=/tmp/pulseaudio/pulseaudio.cookie
       - DISPLAY=:0
@@ -19,6 +20,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /tmp/pulseaudio:/tmp/pulseaudio
       - /dev/snd:/dev/snd
+#      - /run/user/1000/:/run/user/1000/
     user: 1000:1000
     devices:
       - /dev/dri/:/dev/dri/
