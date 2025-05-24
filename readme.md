@@ -19,7 +19,7 @@ dependencies
 ```bash
 	pulseaudio
 	docker
-	docker compose
+	docker-compose
 ```
 Edit .env file for parameters
 
@@ -29,7 +29,7 @@ Edit .env file for parameters
 Create pulse audio socket and cookie with provided bash script and then just do
 
 ```bash
-	docker-compose -f compose.yml up
+	docker-compose up
 ```
 
 ### Conclusion

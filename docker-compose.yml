@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   lutris:
     tty: true
@@ -7,10 +6,12 @@ services:
     build:
       context: .
       dockerfile: ${DOCKERFILE-Dockerfile}
+    ports:
+      - "5901:5901"
     environment:
+      - PULSE_SERVER=unix:/tmp/pulseaudio.socket
+      - PULSE_COOKIE=/tmp/pulseaudio.cookie
       - NO_AT_BRIDGE=1
-      - PULSE_SERVER=unix:/tmp/pulseaudio/pulseaudio.socket
-      - PULSE_COOKIE=/tmp/pulseaudio/pulseaudio.cookie
       - DISPLAY=:0
       - UDEV=1
       - PGID=1000
@@ -18,12 +19,18 @@ services:
     volumes:
       - ${SRC-..}:/home/gamer
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - /tmp/pulseaudio:/tmp/pulseaudio
-      - /dev/snd:/dev/snd
+      - /tmp/pulseaudio.socket:/tmp/pulseaudio.socket
+      - /tmp/pulseaudio.client.conf:/etc/pulse/client.conf
+      - /dev/input:/dev/input:rw  # Map input devices for joystick access
+      # - /dev/snd:/dev/snd
 #      - /run/user/1000/:/run/user/1000/
     user: 1000:1000
     devices:
       - /dev/dri/:/dev/dri/
       - /dev/snd:/dev/snd
       - /dev/bus/usb:/dev/bus/usb
-      - /dev/input:/dev/input
+      # - /dev/input:/dev/input
+      - /dev/input/
+      # - /dev/input/js0
+      # - /dev/input/event0  # Map event device(s) if needed
+    privileged: true

@@ -8,8 +8,8 @@ RUN echo Include = /etc/pacman.d/mirrorlist >> /etc/pacman.conf
 
 RUN pacman -Syy --noconfirm
 RUN pacman -S --noconfirm nvidia nvidia-utils lib32-nvidia-utils nvidia-settings lib32-mesa vulkan-icd-loader lib32-vulkan-icd-loader vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader
-RUN pacman -S --noconfirm iputils p7zip winetricks wine steam pciutils firefox sdl procps-ng
-RUN pacman -Sy --noconfirm joystick
+RUN pacman -S --noconfirm iputils p7zip winetricks xorg-xinput wine steam pciutils firefox sdl procps-ng
+RUN pacman -Sy --noconfirm joystick xdg-utils thunar
 
 RUN pacman -Sy --noconfirm \
     pulseaudio \
@@ -28,8 +28,9 @@ RUN gpasswd -a gamer sudo
 RUN echo '%sudo ALL=(ALL) ALL' >> /etc/sudoers
 RUN echo 'gamer:gamer' | chpasswd
 
-# Add the user to the audio group
+# Add the user to the audio and input group
 RUN usermod -a -G audio gamer
+RUN usermod -a -G input gamer
 #set machine id?
 RUN systemd-machine-id-setup
 
