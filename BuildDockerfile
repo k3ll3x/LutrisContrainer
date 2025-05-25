@@ -1,0 +1,32 @@
+FROM archlinux:latest
+
+# Enable multilib repo and update system
+RUN sed -i '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf && \
+    pacman -Syyu --noconfirm
+
+# Install essential packages
+RUN pacman -S --noconfirm base-devel git sudo wget
+
+# Create user 'builder' with sudo privileges
+RUN useradd -m -G wheel builder && \
+    echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+USER builder
+WORKDIR /home/builder
+
+# Clone and build yay
+RUN git clone https://aur.archlinux.org/yay.git /tmp/yay && \
+    cd /tmp/yay && \
+    makepkg -si --noconfirm && \
+    rm -rf /tmp/yay
+
+# Install DXVK and Lutris using yay
+RUN yay -S --noconfirm dxvk-bin lutris
+
+# Switch back to root if needed
+USER root
+
+# Set environment variables for Vulkan and DXVK
+ENV DXVK_HUD=1
+
+CMD ["/bin/bash"]

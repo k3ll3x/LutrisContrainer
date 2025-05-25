@@ -7,9 +7,14 @@ RUN echo [multilib] >> /etc/pacman.conf
 RUN echo Include = /etc/pacman.d/mirrorlist >> /etc/pacman.conf
 
 RUN pacman -Syy --noconfirm
-RUN pacman -S --noconfirm nvidia nvidia-utils lib32-nvidia-utils nvidia-settings lib32-mesa vulkan-icd-loader lib32-vulkan-icd-loader vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader
-RUN pacman -S --noconfirm iputils p7zip winetricks xorg-xinput wine steam pciutils firefox sdl procps-ng
-RUN pacman -Sy --noconfirm joystick xdg-utils thunar
+RUN pacman -S --noconfirm nvidia nvidia-utils lib32-nvidia-utils nvidia-settings \
+    lib32-mesa vulkan-icd-loader lib32-vulkan-icd-loader \
+    vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader \
+    vulkan-radeon lib32-vulkan-radeon \
+    amdvlk lib32-amdvlk \
+    iputils p7zip winetricks xorg-xinput wine steam pciutils firefox sdl procps-ng
+
+RUN pacman -Sy --noconfirm joystick xdg-utils thunar base-devel git sudo
 
 RUN pacman -Sy --noconfirm \
     pulseaudio \
@@ -36,6 +41,8 @@ RUN systemd-machine-id-setup
 
 USER gamer
 ENV USER=gamer
+ENV WINEPREFIX=~/.wine
+ENV WINEARCH=amd64
 #VOLUME /home/gamer
 
 CMD ["lutris"]
