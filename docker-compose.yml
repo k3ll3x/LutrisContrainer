@@ -19,7 +19,7 @@ services:
     volumes:
       - ${SRC-..}:/home/gamer
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - /tmp/pulseaudio.socket:/tmp/pulseaudio.socket
+      - /tmp/pulseaudio.socket/:/tmp/pulseaudio.socket/
       - /tmp/pulseaudio.client.conf:/etc/pulse/client.conf
       - /dev/input:/dev/input:rw  # Map input devices for joystick access
       # - /dev/snd:/dev/snd

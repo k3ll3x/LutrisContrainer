@@ -1,6 +1,7 @@
 FROM archlinux/archlinux:base as lutris
 
 RUN pacman -Syy --noconfirm
+RUN pacman -Syu --noconfirm
 RUN pacman -S --noconfirm lutris
 
 RUN echo [multilib] >> /etc/pacman.conf
@@ -8,11 +9,14 @@ RUN echo Include = /etc/pacman.d/mirrorlist >> /etc/pacman.conf
 
 RUN pacman -Syy --noconfirm
 RUN pacman -S --noconfirm nvidia nvidia-utils lib32-nvidia-utils nvidia-settings \
-    lib32-mesa vulkan-icd-loader lib32-vulkan-icd-loader \
+    mesa lib32-mesa vulkan-icd-loader lib32-vulkan-icd-loader \
     vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader \
     vulkan-radeon lib32-vulkan-radeon \
-    amdvlk lib32-amdvlk \
-    iputils p7zip winetricks xorg-xinput wine steam pciutils firefox sdl procps-ng
+#    amdvlk lib32-amdvlk \
+    vulkan-tools \
+    wine wine-gecko wine-mono \
+    iputils p7zip winetricks xorg-xinput steam pciutils firefox sdl procps-ng 
+#    dxvk-bin
 
 RUN pacman -Sy --noconfirm joystick xdg-utils thunar base-devel git sudo
 
@@ -41,7 +45,7 @@ RUN systemd-machine-id-setup
 
 USER gamer
 ENV USER=gamer
-ENV WINEPREFIX=~/.wine
+ENV WINEPREFIX=/home/gamer/.wine
 ENV WINEARCH=amd64
 #VOLUME /home/gamer
 
